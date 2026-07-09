@@ -1,0 +1,45 @@
+{
+    "polaris_vision_config": {
+        "in_chans": 70,
+        "in_frames": 1,
+        "const_chans": 6,
+
+        "upper_chans": 70,
+
+        "hidden_size": 2048,
+        "image_size": [721, 1440],
+        "patch_size": 6,
+        "window_size": 20,
+        "encoder_depth": 12,
+        "decoder_depth": 12,
+        "num_heads": 32,
+        "mlp_ratio": 4.0,
+        "attn_type": "flash",
+        "mask_type": "h",
+        "norm_type": "adarms",
+        "ffn_type": "geglu_ffn",
+        "n_kv_heads": null,
+
+        "embed_mode": "add",
+        "embed_types": ["step", "hour", "doy", "lead_hour"],
+        "embed_freq": 256,
+
+        "frame_interval": "6h",
+
+        "qwenvl_dim": 3584,
+
+        "meteo_out_channels": 70,
+        "meteo_output_size": [721, 1440],
+        "meteo_token_id": 151655,
+
+        "meteo_loss_type": "l1_channel",
+        "meteo_loss_weight": 1.0,
+        "meteo_loss_coef": 1.0,
+        "lead_hour_scaling": true,
+        "pl_chans": null,
+
+        "meteo_data_path": "<PATH_TO_ERA5_ZARR>",
+
+        "_attn_implementation": "eager"
+    }
+}

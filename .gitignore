@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Model weights live on the Hugging Face Hub, not in git.
+model/*.safetensors
+model/*.bin
+model/*.pt
+
+# Local verification artifacts (regression outputs, not part of the release).
+baseline/
+
+# Env
+.venv/
+venv/
+*.log

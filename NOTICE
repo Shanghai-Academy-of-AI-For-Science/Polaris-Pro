@@ -1,0 +1,19 @@
+Polaris-Pro
+Copyright 2026 The Polaris-Pro Authors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It includes and/or is derived from third-party software and model weights.
+Their licenses and attributions are listed in THIRD_PARTY_LICENSES.md.
+Notable components:
+
+  * Qwen3-VL (Alibaba Cloud)          — Apache-2.0, base backbone.
+  * ESM-2 (Meta AI / facebookresearch)— MIT, protein encoder (weights merged).
+  * Swin Transformer (Microsoft)      — MIT, used inside the weather encoder.
+  * SAM 3 (Meta)                      — separate gated license; NOT redistributed
+                                        here. Users must download it themselves
+                                        for medical-image segmentation.
+
+Use of the SAM 3 weights is governed solely by Meta's SAM license, which you
+accept when you download them from Meta. Nothing in this repository grants any
+rights to SAM 3.

@@ -1,0 +1,41 @@
+requirements.txt# ============================================================================
+# Polaris-Pro inference dependencies (pinned to the versions verified working)
+# Python 3.10.  Install torch FIRST (it carries the CUDA runtime), then the rest.
+# ============================================================================
+
+# --- Core (install first; CUDA 12.4 build) ---
+# torch / torchvision must match the CUDA on the deploy host.
+# These wheels are cu124; if the host driver differs, install the matching
+# torch 2.6.0 build from https://download.pytorch.org/whl/ .
+torch==2.6.0
+torchvision==0.21.0
+
+# --- Transformers stack (EXACT pins — required for correctness) ---
+# transformers 5.0.0 provides Sam3Model (med_seg) and the qwen3_vl arch used here.
+# Do NOT upgrade to 5.1.x (DeepSpeed/backward regression) or downgrade.
+transformers==5.0.0
+tokenizers==0.22.2
+accelerate==1.7.0
+safetensors==0.5.3
+huggingface_hub==1.18.0
+
+# --- Numerics ---
+numpy==2.2.6
+scipy==1.15.3
+einops==0.8.2
+
+# --- Modality-specific ---
+# Molecule: RDKit (SMILES↔graph) + PyTorch-Geometric (GNN encoder)
+rdkit==2026.3.2
+torch-geometric==2.7.0
+# Medical-image segmentation (med_seg): OpenCV for image ops
+opencv-python-headless==4.13.0.92
+# Weather: netCDF / zarr I/O for ERA5-format gridded fields
+netCDF4==1.7.4
+xarray==2025.6.1
+
+# --- Attention kernel (optional but recommended for speed) ---
+# flash-attn must be built against the installed torch/CUDA. If the build is
+# unavailable on the host, the model auto-falls back to eager attention
+# (outputs unchanged, only slower).
+flash-attn==2.7.4.post1
