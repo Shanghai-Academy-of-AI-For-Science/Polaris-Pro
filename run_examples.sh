@@ -59,9 +59,9 @@ do_run rna_cls && run rna_cls \
   --system "You are a non-coding RNA family classifier. Output only the family name, no other text." \
   --prompt $'<rna>\nWhich family does this non-coding RNA sequence belong to?'
 
-# (2) RNA regression — mean ribosome loading (translation efficiency)
+# (2) RNA regression — mean ribosome loading (translation efficiency);
 do_run rna_reg && run rna_reg \
-  --rna "CCCCCCAAGCAACACGCGCGGGCCTATCGGCAGCACCATGGCCGCATATACCGCATATA" \
+  --rna "CCCCCCAAGCAACACGCGCGGGCCTATCGGCCCGCCCAGGAGGCCGGCGTACCCCACGTCAGTTACCTATCTCCGTTACTTACCGCATATA" \
   --prompt $'<rna>\nWhat is the expected translation efficiency associated with the sequence?'
 
 # (3) RNA generation — toehold switch design (trigger + linker -> switch)
@@ -73,26 +73,26 @@ do_run rna_gen && run rna_gen --task generation --max_new_tokens 128 \
 # ---------------------------------------------------------------------------
 # DNA
 # ---------------------------------------------------------------------------
-# (4) DNA classification — promoter detection, 300 bp (Yes/No)
+# (4) DNA classification — promoter detection, 300 bp (Yes/No);
 do_run dna_cls && run dna_cls \
-  --dna "GCAATAAAAGGCTTAGCCACATAGTGCATGCATGTACACAGCATGTACAC" \
+  --dna "CTAAATATTAACTGGTCTTGTGAGATGTCTTCTTGGCTGGAGCCTGACCACCTAACTTACTGTTTTTCCTCCAACTGCTGCCTCCTCCTTTCCCTCTGCTGCAGGCTGGAACTAAGGGCGGCGGGTGGCGGCGGGAGGAGGAAGGAGGAGAAGCAAAGTTGGCCAGGGTCCTGCTGGCTGGGGGCCAGGACTGCCTCCCTAAACAAGCAGGCGGGGGCACATATAGCCCTGGGTTGAGTTGTTGCCCTTACTCATCTGGCCACAGCAGGAAGAAGAGGCGCCCGGAAAACCTTAGCTCTT" \
   --system "You are a DNA sequence analysis expert. Read the DNA sequence(s) and the question carefully. Respond with a single token: exactly 'Yes' or 'No'. Do not add any explanation, punctuation, reasoning, or additional text." \
   --prompt $'<dna>\nIs this 300 bp DNA sequence a promoter region (all promoters, TATA and non-TATA combined)? Answer Yes or No.'
 
-# (5) DNA regression — enhancer activity (float)
+# (5) DNA regression — enhancer activity (float);
 do_run dna_reg && run dna_reg \
-  --dna "AACATACCCTGCTCTAGCGTATTGCTTTTTGGCAGCTACGTAGCTAGCTAGCTTTTCGTTTGG" \
+  --dna "TGTCGCTCCCATTTCGTCAAATGTTGCGTGCTAATTCGCTTGCCTTCTGGCGGCTATTTTTGTTTTGATATAATTTATATTTCTCGCTCTTTACTTATCTTTTTTGCTTTTTTTTTGTATTTTGTTTGCCGCTTACACTTCACATTTGCCTTCGGGGGCCGTCGCTTAAAAATAAACGCACACACACACTCGCGGCATTCACATATTTATTTTTGGTTTCTCCAACTTTGTACGCTCTGCGTTTTCTTC" \
   --system "You are a DNA sequence analysis expert. Read the DNA sequence and the question carefully. Respond with a single floating-point number only. Do not add units, explanations, reasoning, or any additional text." \
-  --prompt $'<dna>\nPredict the quantile-normalized developmental enhancer (Dev) log2 enrichment activity score of this DNA sequence. Answer with a float number.'
+  --prompt $'<dna>\nPredict the quantile-normalized housekeeping enhancer (Hk) log2 enrichment activity score of this DNA sequence. Answer with a float number.'
 
 # ---------------------------------------------------------------------------
 # Protein
 # ---------------------------------------------------------------------------
-# (6) Protein classification — solubility (0/1)
+# (6) Protein classification — solubility (0/1);
 do_run protein_cls && run protein_cls \
-  --protein "MLSVRIAAAVARALPRRAGLVSKNALGSSFIAARNFHASNTHLQKTGTAEMSSILEERILGADTSVDLEETGRVLSIGDGIARVHGLRNVQAEEMVEFSSGLKGMSLNLEP" \
+  --protein "MANMLVASSSKTLPTTTTTTITPKPKFPLLKTPLLKLSPPQLPPLKHLNLSVLKSAAITATPLTLSFLLPYPSLAEEIEKASLFDFNLTLPIIMAEFLFLMFALDKIYYTPLGDFMDKRDASIKEQLSGVKDTSSEVKQLEEQANAVMRAARAEISAALNKMKKETQLEVEAKLAEGRKKIEVELQEALGSLEQQKEDTIKSLDSQISALSDDIVKKVLPVS" \
   --system "You are a protein solubility predictor. This is a binary classification task. Output only one digit: 1 for soluble, 0 for insoluble. Do not output any other text." \
-  --prompt $'<protein>\nSolubility prediction involves forecasting if a protein can dissolve. What is the solubility status of this protein? Output only one digit: 1 for soluble, 0 for insoluble.'
+  --prompt $'<protein>\nThis task predicts whether a given protein will be soluble. Can this amino acid sequence produce a soluble protein? Output only one digit: 1 for soluble, 0 for insoluble.'
 
 # (7) Protein regression — stability score
 do_run protein_reg && run protein_reg \
@@ -100,9 +100,9 @@ do_run protein_reg && run protein_reg \
   --system "You are a protein stability predictor. Output only the stability score as a number, no other text." \
   --prompt $'<protein>\nHow is the stability of this protein sequence calculated?'
 
-# (8) Protein multi-label — Enzyme Commission (EC) numbers
+# (8) Protein multi-label — Enzyme Commission (EC) numbers;
 do_run protein_ec && run protein_ec \
-  --protein "MHHHHHHSSGVDLGTENLYFQSNAMDFPQQLEACVKQANQALSRFIAPLPFQNTPVVETMQYGALLGGKRLRPFLVYATGHMFGVSTNTLDAPAAAVELIHAYSLIHDDLPAMDDDDLRRGLPTCHVKFGEANAILAGDALQTLAFSILSDADLADYIIQRNK" \
+  --protein "MHHHHHHSSGVDLGTENLYFQSNAMDFPQQLEACVKQANQALSRFIAPLPFQNTPVVETMQYGALLGGKRLRPFLVYATGHMFGVSTNTLDAPAAAVECIHAYSLIHDDLPAMDDDDLRRGLPTCHVKFGEANAILAGDALQTLAFSILSDANMPEVSDRDRISMISELASASGIAGMCGGQALDLDAEGKHVPLDALERIHRHKTGALIRAAVRLGALSAGDKGRRALPVLDKYAESIGLAFQVQDDILDVVGDTATLGKRQGADQQLGKSTYPALLGLEQARKKARDLIDDARQALKQLAEQSLDTSALEALADYIIQRNK" \
   --system "You are a protein function predictor. Output only the EC number(s), comma-separated, no other text." \
   --prompt $'<protein>\nPredict the Enzyme Commission (EC) number(s) of this protein. Output only the EC numbers, comma-separated.'
 

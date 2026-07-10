@@ -167,7 +167,7 @@ setting:
 ```bash
 export PYTHONPATH=$PWD/code
 python code/inference.py --model_path model --greedy --max_new_tokens 64 \
-  --rna "GGATGCGATCATGTCTGCACTAACACACCGGATCCCATCAGAACTCCG" \
+  --rna "GGATGCGATCATGTCTGCACTAACACACCGGATCCCATCAGAACTCCGAAGTTAAGCGTGCTTGGGCGGGAGTAGTACTAGGATGGGCGACCCCTTAGGAAGTACTCGTGTTGCATCCC" \
   --system "You are a non-coding RNA family classifier. Output only the family name, no other text." \
   --prompt $'<rna>\nWhich family does this non-coding RNA sequence belong to?'
 
