@@ -1290,7 +1290,9 @@ class BioQwen3VLInference:
 
         results = []
         for idx, sample in enumerate(samples):
-            base = Path(sample.get("data_path", "")) or default_base
+            # Path("") is Path(".") and truthy, so `or default_base` would never
+            # trigger; fall back only when data_path is actually empty/missing.
+            base = Path(sample["data_path"]) if sample.get("data_path") else default_base
             task = sample.get("task", "unknown")
             try:
                 response = self.generate_from_item(sample, base_path=base, **gen_kwargs)
@@ -1562,7 +1564,13 @@ def main():
 
     # ---- batch mode ----
     if args.input_file:
-        out = args.output_file or args.input_file.replace(".jsonl", "_results.jsonl").replace(".json", "_results.jsonl")
+        if args.output_file:
+            out = args.output_file
+        else:
+            # Insert "_results" before the suffix; never collides with the input
+            # (a suffix-less input still gets a distinct "_results.jsonl" name).
+            in_path = Path(args.input_file)
+            out = str(in_path.with_name(f"{in_path.stem}_results.jsonl"))
         inferencer.batch_inference(args.input_file, out, **gen_kwargs)
         return
 

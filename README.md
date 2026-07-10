@@ -120,7 +120,7 @@ nine imaging modalities, versus six modality-native segmentation specialists.
 | Pathology  |     977 | **87.29** | <ins>81.57</ins> | 43.44 | 42.06 | 26.08 | 25.38 | 24.69 |
 | Ultrasound |  10,184 | <ins>90.54</ins> | **91.03** | 89.76 | 57.47 |  5.23 | 17.12 | 22.91 |
 
-<sub>Best overall Dice (All), and best on CT, MRI, pathology, dermoscopy, and endoscopy. On the four modalities where BiomedParse leads, the gap is ≤ 0.5 Dice. Polaris-Pro reuses the SAM3 image branch as its dense-feature source, lifting off-the-shelf SAM3 (35.40) to 91.20.</sub>
+<sub>Best overall Dice (All), and best on CT, MRI, pathology, dermoscopy, and endoscopy. On X-ray, Fundus, and Ultrasound the gap to BiomedParse is ≤ 0.5 Dice; on the smallest split (OCT, 283 samples) it is 1.3. Polaris-Pro reuses the SAM3 image branch as its dense-feature source, lifting off-the-shelf SAM3 (35.40) to 91.20.</sub>
 
 ## Setup
 
@@ -132,14 +132,15 @@ pip install torch==2.6.0 torchvision==0.21.0     # match your host CUDA
 pip install -r requirements.txt
 ```
 
-`transformers==5.0.0` is a hard pin. `flash-attn` is optional — if it isn't
-installed the model automatically falls back to eager attention (same output,
-slower).
+`transformers==5.0.0` is a hard pin. `flash-attn` is **not** installed by
+default (it must be compiled against your torch/CUDA); without it the model
+automatically falls back to eager attention — identical outputs, just slower.
+To enable it: `pip install flash-attn==2.7.4.post1 --no-build-isolation`.
 
 ## Download weights
 
 ```bash
-hf download <HF_REPO> --local-dir ./model
+hf download sais-org/Polaris_Pro --local-dir ./model
 ```
 
 All scientific encoder/decoder weights (ESM-2, the Suiren molecular graph

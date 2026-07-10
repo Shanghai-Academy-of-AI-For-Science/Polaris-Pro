@@ -5,12 +5,20 @@ channels): given an initial atmospheric state, it autoregressively rolls the
 forecast forward in fixed lead-hour steps. This modality has its own script.
 
 ## Requirements
-- `netCDF4`, `xarray` (in `requirements.txt`).
+- `netCDF4`, `xarray`, `zarr` (in `requirements.txt`).
 - **ERA5 statistics** (`--era5_data_path`): the per-channel mean/std, latitude
-  weights, and static fields the encoder normalizes against. Bundled at
+  weights, and static fields used by the pipeline. Bundled at
   `assets/era5_stats/` (~24 MB; derived statistics only, no ERA5 reanalysis data).
 - An **input frame**: a netCDF `[C, H, W]` (or `[T_in, C, H, W]`) tensor whose
-  channels are in the model's exact training order.
+  channels are in the model's exact training order, **already normalized**
+  per channel — see the note below.
+
+> ⚠️ **Input must be pre-normalized.** The model operates in normalized space:
+> the encoder does **not** apply `(x − mean) / std` to the input, and the output
+> is converted back to physical units with `unnormalize` (`x · std + mean`). So
+> the `--input` frame must already be standardized with the same per-channel
+> `mean`/`std` in `assets/era5_stats/` (i.e. `(physical − mean) / std`). Feeding
+> raw physical values yields wrong-scale forecasts that drift over the rollout.
 
 ## Run
 ```bash

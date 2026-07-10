@@ -8,6 +8,7 @@ import logging
 from typing import Optional
 
 import torch
+from rdkit import Chem
 from torch_geometric.data import Data
 
 from .graph_NN import build_graph, ALLOWED_ELEMENTS
@@ -28,6 +29,17 @@ def smiles_to_graph(smiles: str, max_atoms: int = 500) -> Optional[Data]:
         edge_index_all: [2, num_fc_edges] (long) — full-connect graph
         smiles:         str — original SMILES string
     """
+    # Cheap size gate BEFORE build_graph(): the graph builder materializes an
+    # N·(N−1) fully-connected edge tensor, so a huge SMILES would OOM before the
+    # post-hoc check below. Parse with RDKit first and reject on atom count.
+    if smiles is not None:
+        mol = Chem.MolFromSmiles(str(smiles).strip()) if str(smiles).strip() else None
+        if mol is not None and mol.GetNumAtoms() > max_atoms:
+            logger.warning(
+                f"Molecule too large ({mol.GetNumAtoms()} atoms > {max_atoms}): '{str(smiles)[:40]}'"
+            )
+            return None
+
     data, err = build_graph(smiles)
     if err is not None:
         logger.warning(f"Invalid SMILES '{smiles[:80]}': {err}")

@@ -31,11 +31,15 @@ torch-geometric==2.7.0
 # Medical-image segmentation (med_seg): OpenCV for image ops
 opencv-python-headless==4.13.0.92
 # Weather: netCDF / zarr I/O for ERA5-format gridded fields
+# (xarray needs the `zarr` package to read .zarr stores, incl. assets/era5_stats)
 netCDF4==1.7.4
 xarray==2025.6.1
+zarr==2.18.3
 
-# --- Attention kernel (optional but recommended for speed) ---
-# flash-attn must be built against the installed torch/CUDA. If the build is
-# unavailable on the host, the model auto-falls back to eager attention
-# (outputs unchanged, only slower).
-flash-attn==2.7.4.post1
+# --- Attention kernel (OPTIONAL) ---
+# flash-attn speeds up attention but must be COMPILED against the installed
+# torch/CUDA (PyPI ships only an sdist, so `pip install` builds from source and
+# can fail on machines without the CUDA toolkit). It is intentionally left OUT
+# of the default install: without it, the model auto-falls back to eager
+# attention (identical outputs, only slower). To enable it, install manually:
+#   pip install flash-attn==2.7.4.post1 --no-build-isolation

@@ -59,7 +59,7 @@ do_run rna_cls && run rna_cls \
   --system "You are a non-coding RNA family classifier. Output only the family name, no other text." \
   --prompt $'<rna>\nWhich family does this non-coding RNA sequence belong to?'
 
-# (2) RNA regression — mean ribosome loading (translation efficiency);
+# (2) RNA regression — mean ribosome loading (translation efficiency); GT ≈ 0.61
 do_run rna_reg && run rna_reg \
   --rna "CCCCCCAAGCAACACGCGCGGGCCTATCGGCCCGCCCAGGAGGCCGGCGTACCCCACGTCAGTTACCTATCTCCGTTACTTACCGCATATA" \
   --prompt $'<rna>\nWhat is the expected translation efficiency associated with the sequence?'
@@ -73,13 +73,13 @@ do_run rna_gen && run rna_gen --task generation --max_new_tokens 128 \
 # ---------------------------------------------------------------------------
 # DNA
 # ---------------------------------------------------------------------------
-# (4) DNA classification — promoter detection, 300 bp (Yes/No);
+# (4) DNA classification — promoter detection, 300 bp (Yes/No); GT = Yes
 do_run dna_cls && run dna_cls \
   --dna "CTAAATATTAACTGGTCTTGTGAGATGTCTTCTTGGCTGGAGCCTGACCACCTAACTTACTGTTTTTCCTCCAACTGCTGCCTCCTCCTTTCCCTCTGCTGCAGGCTGGAACTAAGGGCGGCGGGTGGCGGCGGGAGGAGGAAGGAGGAGAAGCAAAGTTGGCCAGGGTCCTGCTGGCTGGGGGCCAGGACTGCCTCCCTAAACAAGCAGGCGGGGGCACATATAGCCCTGGGTTGAGTTGTTGCCCTTACTCATCTGGCCACAGCAGGAAGAAGAGGCGCCCGGAAAACCTTAGCTCTT" \
   --system "You are a DNA sequence analysis expert. Read the DNA sequence(s) and the question carefully. Respond with a single token: exactly 'Yes' or 'No'. Do not add any explanation, punctuation, reasoning, or additional text." \
   --prompt $'<dna>\nIs this 300 bp DNA sequence a promoter region (all promoters, TATA and non-TATA combined)? Answer Yes or No.'
 
-# (5) DNA regression — enhancer activity (float);
+# (5) DNA regression — enhancer activity (float); GT ≈ 1.77
 do_run dna_reg && run dna_reg \
   --dna "TGTCGCTCCCATTTCGTCAAATGTTGCGTGCTAATTCGCTTGCCTTCTGGCGGCTATTTTTGTTTTGATATAATTTATATTTCTCGCTCTTTACTTATCTTTTTTGCTTTTTTTTTGTATTTTGTTTGCCGCTTACACTTCACATTTGCCTTCGGGGGCCGTCGCTTAAAAATAAACGCACACACACACTCGCGGCATTCACATATTTATTTTTGGTTTCTCCAACTTTGTACGCTCTGCGTTTTCTTC" \
   --system "You are a DNA sequence analysis expert. Read the DNA sequence and the question carefully. Respond with a single floating-point number only. Do not add units, explanations, reasoning, or any additional text." \
@@ -88,7 +88,7 @@ do_run dna_reg && run dna_reg \
 # ---------------------------------------------------------------------------
 # Protein
 # ---------------------------------------------------------------------------
-# (6) Protein classification — solubility (0/1);
+# (6) Protein classification — solubility (0/1); GT = 1
 do_run protein_cls && run protein_cls \
   --protein "MANMLVASSSKTLPTTTTTTITPKPKFPLLKTPLLKLSPPQLPPLKHLNLSVLKSAAITATPLTLSFLLPYPSLAEEIEKASLFDFNLTLPIIMAEFLFLMFALDKIYYTPLGDFMDKRDASIKEQLSGVKDTSSEVKQLEEQANAVMRAARAEISAALNKMKKETQLEVEAKLAEGRKKIEVELQEALGSLEQQKEDTIKSLDSQISALSDDIVKKVLPVS" \
   --system "You are a protein solubility predictor. This is a binary classification task. Output only one digit: 1 for soluble, 0 for insoluble. Do not output any other text." \
@@ -100,7 +100,7 @@ do_run protein_reg && run protein_reg \
   --system "You are a protein stability predictor. Output only the stability score as a number, no other text." \
   --prompt $'<protein>\nHow is the stability of this protein sequence calculated?'
 
-# (8) Protein multi-label — Enzyme Commission (EC) numbers;
+# (8) Protein multi-label — Enzyme Commission (EC) numbers; GT includes 2.5.1.10
 do_run protein_ec && run protein_ec \
   --protein "MHHHHHHSSGVDLGTENLYFQSNAMDFPQQLEACVKQANQALSRFIAPLPFQNTPVVETMQYGALLGGKRLRPFLVYATGHMFGVSTNTLDAPAAAVECIHAYSLIHDDLPAMDDDDLRRGLPTCHVKFGEANAILAGDALQTLAFSILSDANMPEVSDRDRISMISELASASGIAGMCGGQALDLDAEGKHVPLDALERIHRHKTGALIRAAVRLGALSAGDKGRRALPVLDKYAESIGLAFQVQDDILDVVGDTATLGKRQGADQQLGKSTYPALLGLEQARKKARDLIDDARQALKQLAEQSLDTSALEALADYIIQRNK" \
   --system "You are a protein function predictor. Output only the EC number(s), comma-separated, no other text." \

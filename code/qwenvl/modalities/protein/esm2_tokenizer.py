@@ -47,7 +47,9 @@ class Esm2Tokenizer:
         self.pad_token_id = _PAD_ID
 
     def _encode_one(self, seq: str) -> List[int]:
-        body = [_TOKEN_TO_ID.get(c, _UNK_ID) for c in seq]
+        # ESM2 residue tokens are uppercase; upper-case here so a lowercase
+        # sequence doesn't silently map every residue to <unk>.
+        body = [_TOKEN_TO_ID.get(c, _UNK_ID) for c in seq.upper()]
         return [_CLS_ID] + body + [_EOS_ID]
 
     def __call__(
