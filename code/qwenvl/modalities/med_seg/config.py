@@ -1,7 +1,8 @@
 """Config for the med_seg modality (SAM3 medical-image segmentation).
 
 Held under ``main_config.med_seg_config`` and passed to ``register_modality``
-when the user enables med-seg via ``--sam3_model_path``.
+to build the med-seg decoder skeleton; the SAM3 backbone is attached at
+inference time (see scripts/medseg/infer_med_seg_qwen3vl.py).
 """
 
 from dataclasses import dataclass, field

@@ -31,10 +31,10 @@ export TOKENIZERS_PARALLELISM=false
 
 INFER="$PKG_ROOT/code/inference.py"
 
-# Note: medical-image segmentation (med_seg) needs the SAM3 backbone, which is
-# NOT bundled (Meta gated license). Download it yourself and pass it to the
-# med_seg script with --sam3_model_path; see docs/MEDSEG.md. The examples below
-# do not touch med_seg.
+# Note: medical-image segmentation (med_seg) uses a dedicated script and an
+# embedded, fine-tuned SAM3 backbone (weights in model.safetensors, config in
+# model/sam3/) governed by Meta's SAM License; see docs/MEDSEG.md. The examples
+# below do not touch med_seg.
 
 run() {  # name, then inference.py args
   local name="$1"; shift

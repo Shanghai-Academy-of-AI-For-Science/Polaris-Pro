@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[🤗 Model](https://huggingface.co/sais-org/Polaris_Pro) &nbsp;•&nbsp; [💻 GitHub](https://github.com/Shanghai-Academy-of-AI-For-Science/Polaris-Pro) &nbsp;•&nbsp; [📜 Technical Report (coming soon)](#) &nbsp;•&nbsp; [⚖️ License: Apache-2.0](./LICENSE)
+[🤗 Model](https://huggingface.co/sais-org/Polaris_Pro) &nbsp;•&nbsp; [💻 GitHub](https://github.com/Shanghai-Academy-of-AI-For-Science/Polaris-Pro) &nbsp;•&nbsp; [📜 Technical Report (coming soon)](#) &nbsp;•&nbsp; [⚖️ License: Apache-2.0 + SAM License](./LICENSE)
 
 </div>
 
@@ -51,7 +51,7 @@ SMILES string, a global forecast, or a segmentation mask.
 | Medical image | —             | ✅         |
 | Text          | ✅            | ✅         |
 
-<sub>**Understanding** = classification / regression / scientific QA. **Generation**: RNA sequence design · Molecule text → SMILES · Weather 10-day global ERA5 0.25° forecast · Medical-image text-prompted segmentation (needs SAM 3).</sub>
+<sub>**Understanding** = classification / regression / scientific QA. **Generation**: RNA sequence design · Molecule text → SMILES · Weather 10-day global ERA5 0.25° forecast · Medical-image text-prompted segmentation (SAM 3-based; Meta SAM License).</sub>
 
 ## Benchmarks
 
@@ -143,11 +143,12 @@ To enable it: `pip install flash-attn==2.7.4.post1 --no-build-isolation`.
 hf download sais-org/Polaris_Pro --local-dir ./model
 ```
 
-All scientific encoder/decoder weights (ESM-2, the Suiren molecular graph
-encoder, the RNA/DNA ConvFormers, and the Swin-ViT weather tower) are embedded
-in `model.safetensors` — nothing else to fetch. The **only** separate download
-is **SAM 3** for medical-image segmentation, which ships under Meta's gated
-license (see [docs/MEDSEG.md](docs/MEDSEG.md)).
+All weights are contained in `model.safetensors`: the scientific
+encoders/decoders (ESM-2, the Suiren molecular graph encoder, the RNA/DNA
+ConvFormers, the Swin-ViT weather tower) and the fine-tuned SAM 3 branch used
+for medical-image segmentation. The SAM 3 weights are governed by Meta's SAM
+License (`SAM_LICENSE.txt`); everything else is Apache-2.0 (see
+[docs/MEDSEG.md](docs/MEDSEG.md)).
 
 ## Quick start
 
@@ -185,13 +186,15 @@ python code/inference.py --model_path model --task mol_generation --max_new_toke
   with `conversations` (system/human turns) and the sequence field. See `run_examples.sh`.
 
 Weather forecasting and medical-image segmentation use dedicated scripts —
-see [docs/WEATHER.md](docs/WEATHER.md) and [docs/MEDSEG.md](docs/MEDSEG.md)
-(the latter needs SAM 3, downloaded separately from Meta).
+see [docs/WEATHER.md](docs/WEATHER.md) and [docs/MEDSEG.md](docs/MEDSEG.md).
 
 ## License
 
-Apache-2.0 (`LICENSE`). Third-party components and the separately-downloaded,
-gated SAM 3 are documented in `THIRD_PARTY_LICENSES.md` and `NOTICE`.
+**Composite.** The code and all weights except the SAM 3 branch are
+**Apache-2.0** (`LICENSE`). The embedded SAM 3 medical-segmentation weights are
+governed by Meta's **SAM License** (`SAM_LICENSE.txt`), which permits
+redistribution under the same license and carries acceptable-use restrictions.
+Third-party components are documented in `THIRD_PARTY_LICENSES.md` and `NOTICE`.
 
 ## Citation
 

@@ -52,15 +52,20 @@ corresponding upstream license still governs that portion of the weights.
 - **License:** released here under Apache-2.0 with the authors' permission.
 - **Depends on:** RDKit (BSD-3-Clause) and PyTorch-Geometric (MIT).
 
-## 6. SAM 3 — medical-image segmentation backbone (NOT redistributed)
+## 6. SAM 3 — medical-image segmentation backbone (EMBEDDED, under Meta's SAM License)
 
 - **Upstream:** Segment Anything Model 3 (SAM 3), Meta.
-- **License:** **Meta's SAM license — gated, non-commercial, click-through.**
-- **Status:** **NOT included** in this repository or on the model hub. The
-  medical-segmentation code (`qwenvl/modalities/med_seg/`) can attach a SAM 3
-  model at runtime, but you must obtain SAM 3 yourself from Meta and accept
-  their license. See `docs/MEDSEG.md`.
-- **Link:** https://huggingface.co/facebook (SAM 3, gated)
+- **License:** Meta's **SAM License** — a verbatim copy is distributed with the
+  weights as `SAM_LICENSE.txt`. It permits redistribution **only** under the
+  same license and with that copy attached, and carries acceptable-use
+  restrictions (no military / weapons / illegal uses; Trade-Control compliance).
+  It is **not** Apache-2.0 and is **not** non-commercial.
+- **Status:** **EMBEDDED** — a medical-domain fine-tuned SAM 3 is included in the
+  released `model.safetensors` (under
+  `model.modality_router.decoders.med_seg.sam3.*`), and its topology/processor
+  config ships in `model/sam3/`. Your use of these SAM 3 weights is governed by
+  the SAM License. See `docs/MEDSEG.md`.
+- **Link:** https://huggingface.co/facebook (SAM 3)
 
 ---
 

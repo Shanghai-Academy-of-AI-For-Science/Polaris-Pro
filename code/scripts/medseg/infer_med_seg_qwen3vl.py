@@ -32,11 +32,13 @@ How weights are loaded:
    Qwen3-VL backbone + modality_router.decoders.med_seg.proj from the trained
    checkpoint. The MedSegDecoder skeleton is registered automatically via
    _register_all_modalities() because the saved config carries med_seg_config.
-2. ``Sam3Model.from_pretrained(--sam3_model_path)`` — fresh facebook/sam3
-   topology, then ``decoder.set_sam3(sam3)``.
+2. ``Sam3Model(Sam3Config.from_pretrained(--sam3_model_path))`` — builds the
+   SAM3 topology from config only (no weight download), then
+   ``decoder.set_sam3(sam3)``. The bundled ``model/sam3/`` dir supplies the
+   config + processor.
 3. Overlay ``model.modality_router.decoders.med_seg.sam3.*`` tensors from
-   --ckpt_path onto the live SAM3 instance — restores the medical-domain
-   training.
+   --ckpt_path onto the live SAM3 instance — these are the medical-domain
+   fine-tuned SAM3 weights, embedded in the released checkpoint.
 
 Distributed: torchrun launches N processes; rank 0 enumerates units and
 broadcasts the list. Within each unit, samples are sharded across ranks via
@@ -882,30 +884,32 @@ def build_model(
     decoder = router.decoders["med_seg"]
 
     # ── Attach SAM3 backbone ──
+    # Build the SAM3 skeleton from its *config only* — no SAM3 weight file is
+    # needed. The medical-fine-tuned SAM3 tensors are embedded in this
+    # checkpoint (model.modality_router.decoders.med_seg.sam3.*) and are
+    # overlaid a few lines below. sam3_model_path only supplies config.json
+    # (topology); the bundled model/sam3/ dir carries exactly that.
+    from transformers import Sam3Config
     if is_rank0():
-        logger.info(f"[load] Sam3Model.from_pretrained({sam3_model_path}, dtype={dtype})")
-    # Mirror the training-time image_size override. ckpt-aware: if the
-    # checkpoint was trained at a non-default image_size, the user MUST
-    # pass --sam3_image_size with the same value, otherwise SAM3 weights
-    # won't fit (FPN feature sizes were baked into the trained tensors).
-    sam3_load_kwargs: Dict[str, Any] = {"dtype": dtype}
+        logger.info(f"[load] Sam3Model from config at {sam3_model_path} (weights come from the checkpoint)")
+    sam3_cfg = Sam3Config.from_pretrained(sam3_model_path)
+    # Mirror the training-time image_size override: if the checkpoint was trained
+    # at a non-default image_size, pass the same --sam3_image_size, otherwise the
+    # trained FPN/feature shapes won't fit.
     if sam3_image_size:
-        from transformers import Sam3Config
-        sam3_cfg = Sam3Config.from_pretrained(sam3_model_path)
         new_mask_size = patch_sam3_for_image_size(sam3_cfg, int(sam3_image_size))
-        sam3_load_kwargs["config"] = sam3_cfg
         if is_rank0():
             logger.info(
                 f"[load] SAM3 image_size override: {sam3_image_size} "
                 f"(mask {new_mask_size}×{new_mask_size})"
             )
-    sam3 = Sam3Model.from_pretrained(sam3_model_path, **sam3_load_kwargs)
+    sam3 = Sam3Model(sam3_cfg).to(dtype=dtype)
     sam3.to(device=device)
     sam3.eval()
 
-    # Heal corrupted cells in the freshly downloaded facebook/sam3 (same as
-    # Trained-ckpt overlay below will write over these
-    # for any cell that was actually trained.
+    # Heal any non-finite / blown-up cells in the freshly built SAM3 skeleton
+    # (uninitialized-buffer artifacts). The trained-ckpt overlay below then
+    # writes over every cell that was actually trained.
     healed_cells = 0
     healed_tensors = 0
     for n, p in sam3.named_parameters():
@@ -984,9 +988,10 @@ def main():
     ap.add_argument("--ckpt_path", required=True,
                     help="Trained Qwen3-VL+SAM3 checkpoint dir (e.g. .../checkpoint-23500)")
     ap.add_argument("--sam3_model_path", required=False, default=None,
-                    help="Original facebook/sam3 dir (provides topology + processor). "
-                         "Optional — if the checkpoint at --ckpt_path bundles a sam3/ "
-                         "subdir (modern training output), this flag can be omitted.")
+                    help="SAM 3 config/processor dir (topology + processor only; no "
+                         "weights needed — the fine-tuned SAM 3 weights are embedded in "
+                         "the checkpoint). Optional: defaults to the bundled sam3/ subdir "
+                         "under --ckpt_path (i.e. model/sam3/).")
     ap.add_argument("--system_prompt", default="")
     ap.add_argument("--system_prompt_file", default="")
     ap.add_argument("--dtype", default="bf16", choices=["bf16", "fp16", "fp32"])
@@ -1013,10 +1018,10 @@ def main():
     # Must match the training-time --sam3_image_size value exactly. If the
     # checkpoint was trained at 2016, eval at 1008 will silently load wrong
     # FPN tensor shapes (or fail loudly, depending on the layer).
-    ap.add_argument("--sam3_image_size", type=int, default=None,
-                    help="Override SAM3 vision input size to match training. "
-                         "Default None = use SAM3's bundled 1008. Pass the "
-                         "same value used in --sam3_image_size during training.")
+    ap.add_argument("--sam3_image_size", type=int, default=2016,
+                    help="SAM3 vision input size; must match training. This "
+                         "checkpoint was trained at 2016 (the default). Only change "
+                         "it if you retrain at a different size.")
 
     args = ap.parse_args()
 

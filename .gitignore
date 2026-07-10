@@ -8,8 +8,9 @@ __pycache__/
 # Hugging Face Hub, not in this code repo.
 model/
 
-# Local verification artifacts (regression outputs, not part of the release).
+# Local verification / build artifacts (not part of the release).
 baseline/
+scripts/
 
 # Env
 .venv/
