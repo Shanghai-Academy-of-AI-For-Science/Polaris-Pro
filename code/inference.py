@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Unified inference script for Polaris-Pro.
+Unified inference script for 神珍 (ShenZhen).
 
 Supported tasks (matching training format):
   - classification   : RNA/DNA/mol input  -> text label (0/1)
@@ -1327,7 +1327,7 @@ class BioQwen3VLInference:
     def chat(self, **gen_kwargs):
         """Interactive chat mode."""
         print("\n" + "=" * 50)
-        print("Polaris-Pro Interactive Chat")
+        print("神珍 (ShenZhen) Interactive Chat")
         print("=" * 50)
         print("Commands:")
         print("  /rna SEQ          - add RNA sequence for next turn")
@@ -1451,7 +1451,7 @@ def _input_file_requests_mol_strict(input_file: Optional[str]) -> bool:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Polaris-Pro Inference")
+    parser = argparse.ArgumentParser(description="神珍 (ShenZhen) Inference")
     parser.add_argument("--model_path", type=str, required=True)
 
     # --- single sample mode ---

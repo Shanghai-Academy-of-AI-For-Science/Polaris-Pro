@@ -1,6 +1,6 @@
 # Medical-image segmentation
 
-Polaris-Pro performs **text-prompted medical-image segmentation**: given an
+神珍 performs **text-prompted medical-image segmentation**: given an
 image and a text description of a target region, the backbone conditions a
 **SAM 3** decoder to output the mask. This modality has its own script.
 
@@ -11,7 +11,7 @@ released `model.safetensors`; its topology and processor config ship in
 `model/sam3/`. These SAM 3 weights are governed by **Meta's SAM License**
 (`SAM_LICENSE.txt`), not Apache-2.0, and their use is subject to that license's
 acceptable-use restrictions (no military / weapons / illegal uses; Trade-Control
-compliance). Everything else in Polaris-Pro is Apache-2.0.
+compliance). Everything else in 神珍 is Apache-2.0.
 
 ## Requirements
 - `opencv-python-headless`, `transformers==5.0.0` (provides `Sam3Model`).

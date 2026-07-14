@@ -1,6 +1,6 @@
 # Weather forecasting
 
-Polaris-Pro produces a global **ERA5 0.25° forecast** (721 × 1440 grid, 70
+神珍 produces a global **ERA5 0.25° forecast** (721 × 1440 grid, 70
 channels): given an initial atmospheric state, it autoregressively rolls the
 forecast forward in fixed lead-hour steps. This modality has its own script.
 

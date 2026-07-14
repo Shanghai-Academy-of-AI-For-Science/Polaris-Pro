@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# Polaris-Pro — minimal inference launcher with one example per task type.
+# 神珍 (ShenZhen) — minimal inference launcher with one example per task type.
 #
 # Usage:
 #   bash run_examples.sh                # run ALL examples below

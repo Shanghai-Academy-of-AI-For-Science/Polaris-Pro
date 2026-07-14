@@ -1,6 +1,6 @@
 # Third-Party Licenses & Attributions
 
-Polaris-Pro itself is released under the **Apache License 2.0** (see `LICENSE`).
+神珍 (ShenZhen) itself is released under the **Apache License 2.0** (see `LICENSE`).
 It builds on, vendors, or links to the third-party works below. Each retains
 its own license; where model weights are merged into `model.safetensors`, the
 corresponding upstream license still governs that portion of the weights.

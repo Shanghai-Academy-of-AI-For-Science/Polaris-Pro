@@ -1,18 +1,18 @@
-# Polaris-Pro
+# 神珍 (ShenZhen)
 
 <div align="center">
 
-[🤗 Model](https://huggingface.co/sais-org/Polaris_Pro) &nbsp;•&nbsp; [💻 GitHub](https://github.com/Shanghai-Academy-of-AI-For-Science/Polaris-Pro) &nbsp;•&nbsp; [📜 Technical Report (coming soon)](#) &nbsp;•&nbsp; [⚖️ License: Apache-2.0 + SAM License](./LICENSE)
+[🤗 Model](https://huggingface.co/sais-org/ShenZhen) &nbsp;•&nbsp; [💻 GitHub](https://github.com/Shanghai-Academy-of-AI-For-Science/ShenZhen) &nbsp;•&nbsp; [📜 Technical Report (coming soon)](#) &nbsp;•&nbsp; [⚖️ License: Apache-2.0 + SAM License](./LICENSE)
 
 </div>
 
-**Polaris-Pro is a unified scientific multimodal foundation model** that
+**神珍 is a unified scientific multimodal foundation model** that
 supports scientific **understanding and generation** across Earth science,
 proteins, RNA, DNA, and small molecules within a single **8B** model.
 
 ## Introduction
 
-Polaris-Pro pairs **domain-specific encoders and decoders with a shared
+神珍 pairs **domain-specific encoders and decoders with a shared
 Qwen3-VL-8B backbone**, so heterogeneous scientific data — biological sequences,
 molecular graphs, gridded physical fields, and medical images — are understood
 *and* generated within one model through a natural-language interface. Each
@@ -55,13 +55,13 @@ SMILES string, a global forecast, or a segmentation mask.
 
 ## Benchmarks
 
-**Polaris-Pro** (**8B**) vs **Biology-Instructions** (Llama-3.1-**8B**, text-token,
+**神珍** (**8B**) vs **Biology-Instructions** (Llama-3.1-**8B**, text-token,
 no scientific encoders) and **Intern-S1-Pro** (**~1T** MoE scientific model).
 **Bold** = best; <ins>underline</ins> = second-best.
 
 ### Biological sequence understanding
 
-| Task | Metric | Polaris-Pro (8B) | Biology-Instructions (8B) | Intern-S1-Pro (~1T) |
+| Task | Metric | 神珍 (8B) | Biology-Instructions (8B) | Intern-S1-Pro (~1T) |
 |:-----|:------:|:----------------:|:-------------------------:|:-------------------:|
 | DNA · Epigenetic marks (EMP) | MCC | **71.99** | 3.64 | <ins>14.02</ins> |
 | DNA · Promoter det. 300bp (PD300) | MCC | **91.17** | 58.18 | <ins>82.65</ins> |
@@ -79,11 +79,11 @@ no scientific encoders) and **Intern-S1-Pro** (**~1T** MoE scientific model).
 | Cross-modal · AAN (antibody–antigen) | MCC | <ins>42.96</ins> | 1.06 | **44.76** |
 | Cross-modal · EPI (enhancer–promoter) | MCC | <ins>-0.03</ins> | **3.37** | -1.30 |
 
-<sub>Aggregate over 20 biological-understanding benchmarks: Polaris-Pro matches or beats the ~1T Intern-S1-Pro on 10/20 and the same-scale 8B text-token baseline on 16/20.</sub>
+<sub>Aggregate over 20 biological-understanding benchmarks: 神珍 matches or beats the ~1T Intern-S1-Pro on 10/20 and the same-scale 8B text-token baseline on 16/20.</sub>
 
 ### Molecule understanding (SMolInstruct)
 
-| Task | Metric | Polaris-Pro (8B) | LlaSMol |
+| Task | Metric | 神珍 (8B) | LlaSMol |
 |:-----|:------:|:----------------:|:-------:|
 | BBBP | Acc | **96.95** | 74.60 |
 | HIV | Acc | **97.00** | 96.70 |
@@ -94,20 +94,20 @@ no scientific encoders) and **Intern-S1-Pro** (**~1T** MoE scientific model).
 
 ### Earth-science forecasting — vs ECMWF HRES (day-10, global ERA5 0.25°)
 
-| Variable | Metric | Polaris-Pro (8B) | ECMWF HRES (NWP) |
+| Variable | Metric | 神珍 (8B) | ECMWF HRES (NWP) |
 |:---------|:------:|:----------------:|:----------------:|
 | Z500 | RMSE ↓ | **≈740** | ≈810 |
 | T2M | RMSE ↓ (K) | **≈2.65** | ≈2.90 |
 | MSL | RMSE ↓ (Pa) | **≈680** | ≈745 |
 
-<sub>Polaris-Pro tracks or beats the operational physics-based HRES system, with the advantage growing at longer lead times.</sub>
+<sub>神珍 tracks or beats the operational physics-based HRES system, with the advantage growing at longer lead times.</sub>
 
 ### Medical-image segmentation
 
 Mean Dice (%) on the BiomedParse test splits, 102,855 image–prompt pairs across
 nine imaging modalities, versus six modality-native segmentation specialists.
 
-| Modality | # Samples | Polaris-Pro | BiomedParse | MedSAM | SAM | SAM3 | DINO+MedSAM | DINO+SAM |
+| Modality | # Samples | 神珍 | BiomedParse | MedSAM | SAM | SAM3 | DINO+MedSAM | DINO+SAM |
 |:---------|----------:|:-----------:|:-----------:|:------:|:---:|:----:|:-----------:|:--------:|
 | **All**    | 102,855 | **91.20** | <ins>90.73</ins> | 83.55 | 71.29 | 35.40 | 15.37 | 15.10 |
 | CT         |  45,306 | **93.36** | <ins>92.25</ins> | 83.87 | 74.10 | 28.93 |  9.59 | 10.34 |
@@ -120,14 +120,14 @@ nine imaging modalities, versus six modality-native segmentation specialists.
 | Pathology  |     977 | **87.29** | <ins>81.57</ins> | 43.44 | 42.06 | 26.08 | 25.38 | 24.69 |
 | Ultrasound |  10,184 | <ins>90.54</ins> | **91.03** | 89.76 | 57.47 |  5.23 | 17.12 | 22.91 |
 
-<sub>Best overall Dice (All), and best on CT, MRI, pathology, dermoscopy, and endoscopy. On X-ray, Fundus, and Ultrasound the gap to BiomedParse is ≤ 0.5 Dice; on the smallest split (OCT, 283 samples) it is 1.3. Polaris-Pro reuses the SAM3 image branch as its dense-feature source, lifting off-the-shelf SAM3 (35.40) to 91.20.</sub>
+<sub>Best overall Dice (All), and best on CT, MRI, pathology, dermoscopy, and endoscopy. On X-ray, Fundus, and Ultrasound the gap to BiomedParse is ≤ 0.5 Dice; on the smallest split (OCT, 283 samples) it is 1.3. 神珍 reuses the SAM3 image branch as its dense-feature source, lifting off-the-shelf SAM3 (35.40) to 91.20.</sub>
 
 ## Setup
 
 Python 3.10, an NVIDIA GPU (≥ 48 GB recommended), CUDA 12.x.
 
 ```bash
-conda create -n polaris python=3.10 -y && conda activate polaris
+conda create -n shenzhen python=3.10 -y && conda activate shenzhen
 pip install torch==2.6.0 torchvision==0.21.0     # match your host CUDA
 pip install -r requirements.txt
 ```
@@ -140,7 +140,7 @@ To enable it: `pip install flash-attn==2.7.4.post1 --no-build-isolation`.
 ## Download weights
 
 ```bash
-hf download sais-org/Polaris_Pro --local-dir ./model
+hf download sais-org/ShenZhen --local-dir ./model
 ```
 
 All weights are contained in `model.safetensors`: the scientific
@@ -201,10 +201,10 @@ Third-party components are documented in `THIRD_PARTY_LICENSES.md` and `NOTICE`.
 A technical report is coming soon. For now, please cite:
 
 ```bibtex
-@misc{polarispro2026,
-  title  = {Polaris-Pro: A Unified Scientific Multimodal Foundation Model},
+@misc{shenzhen2026,
+  title  = {ShenZhen (神珍): A Unified Scientific Multimodal Foundation Model},
   author = {Hesen Chen and Xinyu Su and Xiaomeng Yang and Yuetan Lin and Zixiong Yang and Zhiyu Tan and Hao Li},
   year   = {2026},
-  note   = {https://huggingface.co/sais-org/Polaris_Pro}
+  note   = {https://huggingface.co/sais-org/ShenZhen}
 }
 ```
