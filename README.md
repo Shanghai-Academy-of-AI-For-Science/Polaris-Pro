@@ -8,7 +8,9 @@
 
 **神珍 is a unified scientific multimodal foundation model** that
 supports scientific **understanding and generation** across Earth science,
-proteins, RNA, DNA, and small molecules within a single **8B** model.
+proteins, RNA, DNA, and small molecules within a single model built on an
+**8B Qwen3-VL backbone** (about **11B** parameters in total, including the
+native scientific encoders and decoders).
 
 ## Introduction
 
@@ -35,9 +37,10 @@ SMILES string, a global forecast, or a segmentation mask.
   sequence motifs, molecular graphs, dense physical fields, and image structure
   that a generic text tokenizer would destroy — the source of its edge over
   text-token scientific LLMs at the same scale.
-- **Efficient 8B scale.** Delivers strong scientific results — including
+- **Compact scale.** An 8B backbone plus lightweight native encoders/decoders
+  (~11B parameters in total) delivers strong scientific results — including
   end-to-end weather forecasting and medical-image segmentation — from a single
-  8B model.
+  model that fits on one GPU.
 
 ## Capabilities
 
@@ -55,13 +58,13 @@ SMILES string, a global forecast, or a segmentation mask.
 
 ## Benchmarks
 
-**神珍** (**8B**) vs **Biology-Instructions** (Llama-3.1-**8B**, text-token,
-no scientific encoders) and **Intern-S1-Pro** (**~1T** MoE scientific model).
-**Bold** = best; <ins>underline</ins> = second-best.
+**神珍** (8B backbone, ~11B total) vs **Biology-Instructions** (Llama-3.1-**8B**,
+text-token, no scientific encoders) and **Intern-S1-Pro** (**~1T** MoE scientific
+model). **Bold** = best; <ins>underline</ins> = second-best.
 
 ### Biological sequence understanding
 
-| Task | Metric | 神珍 (8B) | Biology-Instructions (8B) | Intern-S1-Pro (~1T) |
+| Task | Metric | 神珍 (~11B) | Biology-Instructions (8B) | Intern-S1-Pro (~1T) |
 |:-----|:------:|:----------------:|:-------------------------:|:-------------------:|
 | DNA · Epigenetic marks (EMP) | MCC | **71.99** | 3.64 | <ins>14.02</ins> |
 | DNA · Promoter det. 300bp (PD300) | MCC | **91.17** | 58.18 | <ins>82.65</ins> |
@@ -83,7 +86,7 @@ no scientific encoders) and **Intern-S1-Pro** (**~1T** MoE scientific model).
 
 ### Molecule understanding (SMolInstruct)
 
-| Task | Metric | 神珍 (8B) | LlaSMol |
+| Task | Metric | 神珍 (~11B) | LlaSMol |
 |:-----|:------:|:----------------:|:-------:|
 | BBBP | Acc | **96.95** | 74.60 |
 | HIV | Acc | **97.00** | 96.70 |
@@ -94,7 +97,7 @@ no scientific encoders) and **Intern-S1-Pro** (**~1T** MoE scientific model).
 
 ### Earth-science forecasting — vs ECMWF HRES (day-10, global ERA5 0.25°)
 
-| Variable | Metric | 神珍 (8B) | ECMWF HRES (NWP) |
+| Variable | Metric | 神珍 (~11B) | ECMWF HRES (NWP) |
 |:---------|:------:|:----------------:|:----------------:|
 | Z500 | RMSE ↓ | **≈740** | ≈810 |
 | T2M | RMSE ↓ (K) | **≈2.65** | ≈2.90 |

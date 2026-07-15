@@ -25,7 +25,7 @@ python code/scripts/medseg/infer_med_seg_qwen3vl.py \
     --ckpt_path model \
     --data_root <dataset_root> \
     --results_root out/medseg \
-    --method polaris_pro \
+    --method shenzhen \
     --save_pred_masks
 ```
 
