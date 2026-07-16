@@ -11,7 +11,12 @@ Architecture (matches qwenvl/modalities/med_seg/decoder.py):
     image      → SAM3 backbone → multi-scale dense features
     joint hidden ─proj─►  text_embeds  ─cross-attn (inside SAM3)──►  cls/box/mask
 
-What this script does:
+Two input modes:
+- Single image: ``--image <path> --prompt "<text>"`` → runs one text-grounded
+  segmentation and saves the predicted mask PNG (no ground truth, no metrics).
+- Dataset folder: ``--data_root <dir>`` (BiomedParse layout) → the batch path below.
+
+What the dataset-folder mode does:
 - Recursively find ``**/test.json`` under --data_root
 - For each unit (dir containing test.json):
     - Run text-grounding segmentation per (image, ann) instance
@@ -228,7 +233,7 @@ def summarize_scores(instance_results: List[Dict[str, Any]]) -> Dict[str, float]
 @dataclass
 class GroundingSample:
     image_path: str
-    mask_path: str
+    mask_path: Optional[str]  # None in single-image mode (no ground truth)
     prompt_text: str
     metadata: Dict[str, Any]
     save_rel: str  # relative path under dest_dir/pred_masks/
@@ -982,7 +987,19 @@ def build_model(
 # ─────────────────────────────────────────────────────────────────────────────
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--data_root", required=True)
+    # Two input modes (mutually exclusive):
+    #  (a) single image  : --image <path> --prompt "<text description>"
+    #  (b) dataset folder : --data_root <dir> (BiomedParse layout, with GT + metrics)
+    ap.add_argument("--data_root", required=False, default=None,
+                    help="Dataset root in BiomedParse layout (each unit dir has "
+                         "test.json + test/ + test_mask/). Folder mode: computes Dice "
+                         "against ground-truth masks.")
+    ap.add_argument("--image", required=False, default=None,
+                    help="Single input image path. Single-image mode: pair with "
+                         "--prompt; saves the predicted mask, no ground-truth/metrics.")
+    ap.add_argument("--prompt", required=False, default=None,
+                    help="Text description of the target region (single-image mode), "
+                         "e.g. 'left heart ventricle in cardiac MRI'.")
     ap.add_argument("--results_root", required=True)
     ap.add_argument("--method", required=True)
     ap.add_argument("--ckpt_path", required=True,
@@ -1024,6 +1041,18 @@ def main():
                          "it if you retrain at a different size.")
 
     args = ap.parse_args()
+
+    # ── Resolve input mode ──
+    single_image_mode = args.image is not None
+    if single_image_mode:
+        if args.data_root is not None:
+            ap.error("--image and --data_root are mutually exclusive; pass only one.")
+        if not args.prompt:
+            ap.error("--image requires --prompt (a text description of the target region).")
+        if not os.path.isfile(args.image):
+            ap.error(f"--image not found: {args.image}")
+    elif args.data_root is None:
+        ap.error("provide either --image (single-image mode) or --data_root (folder mode).")
 
     # ── Determinism — same ckpt + same DATA_ROOT must produce the same
     #     pred mask and the same metrics, regardless of world_size or run
@@ -1121,6 +1150,51 @@ def main():
             f"vision_start_id={qwen_vision_start_id}, "
             f"pad_token_id={pad_token_id}"
         )
+
+    # ── Single-image mode ──────────────────────────────────────────────
+    # One image + one text prompt → one predicted mask. No ground truth, no
+    # metrics. Runs on rank 0 only (a single sample needs no sharding).
+    if single_image_mode:
+        if is_rank0():
+            os.makedirs(args.results_root, exist_ok=True)
+            save_name = Path(args.image).stem + "_mask.png"
+            out_path = os.path.join(args.results_root, save_name)
+            sample = GroundingSample(
+                image_path=os.path.abspath(args.image),
+                mask_path=None,
+                prompt_text=args.prompt,
+                metadata={"file_name": os.path.basename(args.image), "prompt": args.prompt},
+                save_rel=save_name,
+            )
+            logger.info(f"[single-image] image={args.image}")
+            logger.info(f"[single-image] prompt={args.prompt!r}")
+            infer_kwargs = dict(
+                model=model, qwen_processor=qwen_processor, sam3_processor=sam3_processor,
+                system_prompt=system_prompt, batch=[sample], device=device, model_dtype=dtype,
+                qwen_image_pad_id=qwen_image_pad_id, qwen_vision_start_id=qwen_vision_start_id,
+                pad_token_id=pad_token_id, mask_threshold=float(args.mask_threshold),
+            )
+            if args.tile_inference:
+                preds, pil_images = infer_batch_tiled(
+                    **infer_kwargs, tile_size=int(args.tile_size),
+                    tile_overlap=float(args.tile_overlap), tile_batch_size=int(args.tile_batch_size),
+                )
+            else:
+                preds, pil_images = infer_batch(**infer_kwargs)
+            pred_bool = preds[0]
+            save_pred_mask_png(out_path, pred_bool)
+            logger.info(f"[single-image] mask saved -> {out_path}  "
+                        f"(foreground pixels: {int(pred_bool.sum())})")
+            if args.save_vis:
+                vis_path = os.path.join(args.results_root, Path(args.image).stem + "_overlay.png")
+                save_vis_overlay_png(vis_path, pil_images[0], pred_bool)
+                logger.info(f"[single-image] overlay saved -> {vis_path}")
+        dist_barrier()
+        if is_rank0():
+            logger.info("Single-image inference done.")
+        if dist_is_ready():
+            dist.destroy_process_group()
+        return
 
     # Discover test.json units (rank0) and broadcast
     test_jsons = discover_all_test_jsons(args.data_root) if is_rank0() else []
