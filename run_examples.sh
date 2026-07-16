@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# 神珍 (ShenZhen) — minimal inference launcher with one example per task type.
+# Monkey King Bang (MKB) — minimal inference launcher with one example per task type.
 #
 # Usage:
 #   bash run_examples.sh                # run ALL examples below

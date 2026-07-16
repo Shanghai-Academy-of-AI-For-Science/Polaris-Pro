@@ -5,7 +5,7 @@
 Text-grounding inference for BiomedParseData_unzip using the Qwen3-VL +
 SAM3 (med_seg) training stack defined in this repo.
 
-Architecture (matches qwenvl/modalities/med_seg/decoder.py):
+Architecture (matches mkb/modalities/med_seg/decoder.py):
 
     image+text → Qwen3-VL → user-turn JOINT hidden (image_pad block + text)
     image      → SAM3 backbone → multi-scale dense features
@@ -76,14 +76,14 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from qwenvl.models.modeling_bio_qwen3_vl import Qwen3VLForConditionalGeneration  # noqa: E402
-from qwenvl.models.configuration_bio_qwen3_vl import Qwen3VLConfig  # noqa: E402
-from qwenvl.modalities.med_seg.processor import DEFAULT_MED_SEG_SYSTEM_PROMPT  # noqa: E402
-from qwenvl.modalities.med_seg.sam3_resize import (  # noqa: E402
+from mkb.models.modeling_bio_qwen3_vl import Qwen3VLForConditionalGeneration  # noqa: E402
+from mkb.models.configuration_bio_qwen3_vl import Qwen3VLConfig  # noqa: E402
+from mkb.modalities.med_seg.processor import DEFAULT_MED_SEG_SYSTEM_PROMPT  # noqa: E402
+from mkb.modalities.med_seg.sam3_resize import (  # noqa: E402
     patch_sam3_for_image_size,
     patch_sam3_processor_for_image_size,
 )
-from qwenvl.utils.checkpoint_io import load_state_dict_from_ckpt_dir  # noqa: E402
+from mkb.utils.checkpoint_io import load_state_dict_from_ckpt_dir  # noqa: E402
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -883,7 +883,7 @@ def build_model(
         raise RuntimeError(
             "med_seg decoder still not registered after manual "
             "_register_all_modalities() call. "
-            "Check qwenvl/modalities/med_seg/__init__.py exports "
+            "Check mkb/modalities/med_seg/__init__.py exports "
             "MODALITY_CONFIG_KEY and register_modality."
         )
     decoder = router.decoders["med_seg"]

@@ -31,7 +31,7 @@ python code/scripts/medseg/infer_med_seg_qwen3vl.py \
     --image path/to/image.png \
     --prompt "left heart ventricle in cardiac MRI" \
     --results_root out/medseg \
-    --method shenzhen \
+    --method mkb \
     --save_vis
 ```
 
@@ -49,7 +49,7 @@ python code/scripts/medseg/infer_med_seg_qwen3vl.py \
     --ckpt_path model \
     --data_root <dataset_root> \
     --results_root out/medseg \
-    --method shenzhen \
+    --method mkb \
     --save_pred_masks
 ```
 
@@ -94,7 +94,7 @@ from `sentences[].sent` (or `sent`/`raw`/`text`/`phrase`/`caption`, or the
 
 **Outputs.** Per unit, under `out/medseg/<unit>/`: predicted masks in
 `pred_masks/` (with `--save_pred_masks`), optional overlays in `vis/` (with
-`--save_vis`), and a metrics file `shenzhen_<unit>_dataset_metrics.json`
+`--save_vis`), and a metrics file `mkb_<unit>_dataset_metrics.json`
 containing Dice/IoU scores plus per-instance results.
 
 ## Parameters

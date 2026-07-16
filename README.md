@@ -1,8 +1,8 @@
-# 神珍 (ShenZhen)
+# 神珍 · Monkey King Bang (MKB)
 
 <div align="center">
 
-[🤗 Model](https://huggingface.co/sais-org/ShenZhen) &nbsp;•&nbsp; [💻 GitHub](https://github.com/Shanghai-Academy-of-AI-For-Science/ShenZhen) &nbsp;•&nbsp; [📜 Technical Report (coming soon)](#) &nbsp;•&nbsp; [⚖️ License: Apache-2.0 + SAM License](./LICENSE)
+[🤗 Model](https://huggingface.co/sais-org/MKB) &nbsp;•&nbsp; [💻 GitHub](https://github.com/Shanghai-Academy-of-AI-For-Science/MKB) &nbsp;•&nbsp; [📜 Technical Report (coming soon)](#) &nbsp;•&nbsp; [⚖️ License: Apache-2.0 + SAM License](./LICENSE)
 
 </div>
 
@@ -130,7 +130,7 @@ nine imaging modalities, versus six modality-native segmentation specialists.
 Python 3.10, an NVIDIA GPU (≥ 48 GB recommended), CUDA 12.x.
 
 ```bash
-conda create -n shenzhen python=3.10 -y && conda activate shenzhen
+conda create -n mkb python=3.10 -y && conda activate mkb
 pip install torch==2.6.0 torchvision==0.21.0     # match your host CUDA
 pip install -r requirements.txt
 ```
@@ -143,7 +143,7 @@ To enable it: `pip install flash-attn==2.7.4.post1 --no-build-isolation`.
 ## Download weights
 
 ```bash
-hf download sais-org/ShenZhen --local-dir ./model
+hf download sais-org/MKB --local-dir ./model
 ```
 
 All weights are contained in `model.safetensors`: the scientific
@@ -204,10 +204,10 @@ Third-party components are documented in `THIRD_PARTY_LICENSES.md` and `NOTICE`.
 A technical report is coming soon. For now, please cite:
 
 ```bibtex
-@misc{shenzhen2026,
-  title  = {ShenZhen (神珍): A Unified Scientific Multimodal Foundation Model},
+@misc{mkb2026,
+  title  = {MonkeyKing Bang: A Unified Scientific Multimodal Foundation Model},
   author = {Hesen Chen and Xinyu Su and Xiaomeng Yang and Yuetan Lin and Zixiong Yang and Zhiyu Tan and Hao Li},
   year   = {2026},
-  note   = {https://huggingface.co/sais-org/ShenZhen}
+  note   = {https://huggingface.co/sais-org/MKB}
 }
 ```

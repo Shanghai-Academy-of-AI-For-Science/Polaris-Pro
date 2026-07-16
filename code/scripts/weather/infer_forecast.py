@@ -1,7 +1,7 @@
 """Autoregressive forecast rollout aligned with our training engine.
 
 Mirrors the per-step state advancement of
-``qwenvl.modalities.weather.rollout.WeatherRolloutEngine``:
+``mkb.modalities.weather.rollout.WeatherRolloutEngine``:
 
   * ``step_idx`` recurs as the actual rollout step (0, 1, 2, ...). This
     drives both ``hour``/``doy`` (via ``cur_times = times + lead·step_idx``)
@@ -57,9 +57,9 @@ if _REPO_ROOT not in sys.path:
 
 from transformers import AutoProcessor
 
-from qwenvl.models.modeling_bio_qwen3_vl import Qwen3VLForConditionalGeneration
-from qwenvl.modalities.weather.data import load_meteorological_buffers
-from qwenvl.modalities.weather.data.era5_dataset import preprocess_meteo_chat
+from mkb.models.modeling_bio_qwen3_vl import Qwen3VLForConditionalGeneration
+from mkb.modalities.weather.data import load_meteorological_buffers
+from mkb.modalities.weather.data.era5_dataset import preprocess_meteo_chat
 
 
 # ---------------------------------------------------------------------------

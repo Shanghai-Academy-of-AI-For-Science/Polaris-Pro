@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Unified inference script for 神珍 (ShenZhen).
+Unified inference script for Monkey King Bang (MKB).
 
 Supported tasks (matching training format):
   - classification   : RNA/DNA/mol input  -> text label (0/1)
@@ -54,9 +54,9 @@ try:
     from transformers.generation.logits_process import LogitsProcessor, LogitsProcessorList
 except ImportError:  # transformers compatibility shim
     from transformers import LogitsProcessor, LogitsProcessorList
-from qwenvl.models import Qwen3VLForConditionalGeneration
-from qwenvl.processor_compat import load_auto_processor_compat
-from qwenvl.data.inference_helpers import (
+from mkb.models import Qwen3VLForConditionalGeneration
+from mkb.processor_compat import load_auto_processor_compat
+from mkb.data.inference_helpers import (
     RNACharTokenizer,
     RNA_NUM_LATENT_TOKENS,
     _RNA_CHAR_TO_ID,
@@ -65,7 +65,7 @@ from qwenvl.data.inference_helpers import (
     ea_n_bins_for_sample,
     rewrite_ea_binned_instruction,
 )
-from qwenvl.registry.token_manager import BIO_SEQ_OUTPUT_PAD, MODALITY_TOKEN_DEFS
+from mkb.registry.token_manager import BIO_SEQ_OUTPUT_PAD, MODALITY_TOKEN_DEFS
 
 _RNA_TOKENS = MODALITY_TOKEN_DEFS["rna"]
 _DNA_TOKENS = MODALITY_TOKEN_DEFS["dna"]
@@ -95,11 +95,11 @@ def decode_mol_token_ids(token_ids: torch.Tensor) -> str:
     """Decode a 1-D / 2-D tensor of generated mol-vocab IDs into a SMILES string.
 
     Mol generation runs in the decoder's own SMILES vocab (see
-    :mod:`qwenvl.modalities.mol.tokenizer`); each id maps directly to a
+    :mod:`mkb.modalities.mol.tokenizer`); each id maps directly to a
     SMILES token via ``MOL_ID_TO_TOKEN``.  ``<pad>`` / ``<cls>`` / ``<sep>``
     are dropped, and decoding stops at the first ``<sep>``.
     """
-    from qwenvl.modalities.mol.tokenizer import MOL_ID_TO_TOKEN, MOL_SEP_ID
+    from mkb.modalities.mol.tokenizer import MOL_ID_TO_TOKEN, MOL_SEP_ID
 
     if token_ids.dim() == 2:
         token_ids = token_ids[0]
@@ -164,7 +164,7 @@ _MOL_DECODER_VOCAB_SUFFIXES = (
 
 
 def _current_mol_vocab_size() -> int:
-    from qwenvl.modalities.mol.tokenizer import MOL_VOCAB_SIZE
+    from mkb.modalities.mol.tokenizer import MOL_VOCAB_SIZE
     return int(MOL_VOCAB_SIZE)
 
 
@@ -720,7 +720,7 @@ def build_inference_inputs(
 
     # ---- mol encoder inputs (SMILES -> PyG graph -> tensors) ----
     if mol_smiles_list:
-        from qwenvl.modalities.mol.processor import smiles_to_graph
+        from mkb.modalities.mol.processor import smiles_to_graph
         from torch_geometric.data import Batch as PyGBatch
 
         graphs = []
@@ -835,7 +835,7 @@ class BioQwen3VLInference:
         self.tokenizer.padding_side = "left"
 
         # Register per-modality special tokens (ensures tokenizer knows them)
-        from qwenvl.registry.token_manager import SpecialTokenManager
+        from mkb.registry.token_manager import SpecialTokenManager
         token_mgr = SpecialTokenManager(self.processor.tokenizer, self.model)
         bio_token_ids = token_mgr.register_all_modality_tokens(["rna", "dna", "protein", "mol"])
         self.model.config.bio_token_ids = bio_token_ids
@@ -858,7 +858,7 @@ class BioQwen3VLInference:
         dna_cfg = getattr(self.model.config, "dna_config", None)
         has_dna = (dna_cfg is not None) or (router is not None and router.has_encoder("dna"))
         if has_dna:
-            from qwenvl.modalities.dna.processor import DNACharTokenizer
+            from mkb.modalities.dna.processor import DNACharTokenizer
             self.dna_tokenizer = DNACharTokenizer()
             print("DNA encoder detected")
         self.num_dna_latent_tokens = (
@@ -871,7 +871,7 @@ class BioQwen3VLInference:
         protein_cfg = getattr(self.model.config, "protein_config", None)
         has_protein = (protein_cfg is not None) or (router is not None and router.has_encoder("protein"))
         if has_protein:
-            from qwenvl.modalities.protein import make_protein_tokenizer
+            from mkb.modalities.protein import make_protein_tokenizer
             backbone_name = getattr(protein_cfg, "protein_backbone_name", "") if protein_cfg else ""
             self.protein_tokenizer = make_protein_tokenizer(backbone_name)
             print(
@@ -974,7 +974,7 @@ class BioQwen3VLInference:
                 f"decoder class is {decoder.__class__.__name__}, expected MolARDecoder"
             )
         try:
-            from qwenvl.modalities.mol.tokenizer import MOL_SEP_ID, MOL_VOCAB_SIZE
+            from mkb.modalities.mol.tokenizer import MOL_SEP_ID, MOL_VOCAB_SIZE
             vocab_size = int(getattr(decoder, "output_size", 0))
             self._mol_decoder_vocab_size = vocab_size
             tokenizer_vocab_size = int(MOL_VOCAB_SIZE)
@@ -1171,7 +1171,7 @@ class BioQwen3VLInference:
             finally:
                 self.model._mol_generation_mode = False
             try:
-                from qwenvl.modalities.mol.tokenizer import MOL_SEP_ID
+                from mkb.modalities.mol.tokenizer import MOL_SEP_ID
                 self._last_mol_generation_finished = bool(
                     (mol_token_ids == MOL_SEP_ID).any().item()
                 )
@@ -1327,7 +1327,7 @@ class BioQwen3VLInference:
     def chat(self, **gen_kwargs):
         """Interactive chat mode."""
         print("\n" + "=" * 50)
-        print("神珍 (ShenZhen) Interactive Chat")
+        print("Monkey King Bang (MKB) Interactive Chat")
         print("=" * 50)
         print("Commands:")
         print("  /rna SEQ          - add RNA sequence for next turn")
@@ -1451,7 +1451,7 @@ def _input_file_requests_mol_strict(input_file: Optional[str]) -> bool:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="神珍 (ShenZhen) Inference")
+    parser = argparse.ArgumentParser(description="Monkey King Bang (MKB) Inference")
     parser.add_argument("--model_path", type=str, required=True)
 
     # --- single sample mode ---

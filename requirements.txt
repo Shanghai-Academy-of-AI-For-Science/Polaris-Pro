@@ -1,5 +1,5 @@
 # ============================================================================
-# 神珍 (ShenZhen) inference dependencies (pinned to the versions verified working)
+# Monkey King Bang (MKB) inference dependencies (pinned to the versions verified working)
 # Python 3.10.  Install torch FIRST (it carries the CUDA runtime), then the rest.
 # ============================================================================
 

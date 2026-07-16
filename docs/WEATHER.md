@@ -63,7 +63,7 @@ python code/scripts/weather/infer_forecast.py \
     --checkpoint model \
     --era5_data_path assets/era5_stats \
     --input init_frame.nc \
-    --init_time 2024-12-31T00:00:00 \
+    --init_time 2024-12-30T00:00:00 \
     --era5_image_size 721 1440 \
     --max_lead_hour 24 --lead_step_hours 6 \
     --remove_channels q2m d2m sst ws100m u100m v100m lcc mcc hcc tcc ssr ssrd fdir ttr tcw tp \
@@ -77,7 +77,7 @@ python code/scripts/weather/infer_forecast.py \
 | `--checkpoint` | The model directory (config + weights), e.g. `model`. |
 | `--era5_data_path` | ERA5 statistics directory. Use the bundled `assets/era5_stats`. |
 | `--input` | The initial-state `.nc` file described above. |
-| `--init_time` | ISO timestamp of the input frame, e.g. `2024-12-31T00:00:00`. Sets the forecast's start time (used for the time-of-day / day-of-year conditioning). If omitted, the file's `time` coord or `time` attribute is used. |
+| `--init_time` | ISO timestamp of the input frame, e.g. `2024-12-30T00:00:00`. Sets the forecast's start time (used for the time-of-day / day-of-year conditioning). If omitted, the file's `time` coord or `time` attribute is used. |
 | `--max_lead_hour` | How far ahead to forecast, in hours. `24` → forecast out to +24h; `240` → out to 10 days. |
 | `--lead_step_hours` | Hours advanced per rollout step. **Must be 6** (the training interval). With `--max_lead_hour 24` this yields 4 steps (6/12/18/24h). |
 | `--remove_channels` | The channels dropped at training time (85 → 70). **Must match training** — use the list shown above verbatim; the mean/std buffers depend on it. |
