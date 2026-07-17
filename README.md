@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[🤗 Model](https://huggingface.co/sais-org/MKB) &nbsp;•&nbsp; [💻 GitHub](https://github.com/Shanghai-Academy-of-AI-For-Science/MKB) &nbsp;•&nbsp; [📜 Technical Report (coming soon)](#) &nbsp;•&nbsp; [⚖️ License: Apache-2.0 + SAM License](./LICENSE)
+[🤗 Model](https://huggingface.co/sais-org/MKB) &nbsp;•&nbsp; [💻 GitHub](https://github.com/Shanghai-Academy-of-AI-For-Science/MKB) &nbsp;•&nbsp; [📜 Technical Report](./docs/MKB.pdf) &nbsp;•&nbsp; [⚖️ License: Apache-2.0 + SAM License](./LICENSE)
 
 </div>
 
@@ -23,7 +23,7 @@ molecular graph encoder, a Swin-ViT weather tower, a SAM-based image path) and
 decodes back into its native form: a class, a number, a designed sequence, a
 SMILES string, a global forecast, or a segmentation mask.
 
-> 📜 **Technical report coming soon.**
+> 📜 Read the **[technical report](./docs/MKB.pdf)** for architecture, training, and full benchmarks.
 
 ## Key features
 
@@ -201,7 +201,7 @@ Third-party components are documented in `THIRD_PARTY_LICENSES.md` and `NOTICE`.
 
 ## Citation
 
-A technical report is coming soon. For now, please cite:
+If you use MKB, please cite the [technical report](./docs/MKB.pdf):
 
 ```bibtex
 @misc{mkb2026,
